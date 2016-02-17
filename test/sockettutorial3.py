@@ -4,7 +4,7 @@ from queue import Queue
 
 print_lock = threading.Lock()
 
-target = "facebook.com"
+target = "195.196.201.102"
 
 def portscan(port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
