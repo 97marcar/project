@@ -2,7 +2,7 @@ import socket
 import sys
 from _thread import *
 
-host = ""
+host = "192.168.45.61"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,4 +28,4 @@ def threaded_client(conn):
 while True:
     conn, addr = s.accept()
     print("connected to: "+addr[0]+":"+str(addr[1]))
-    start_new_thread(threaded_client(conn,))
+    start_new_thread(threaded_client,(conn,))
