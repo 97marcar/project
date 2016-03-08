@@ -1,38 +1,33 @@
 import socket
-import sys
-from _thread import *
 
-host = ""
-port = 7777
+host = "127.0.0.1"
+port = 8989
+
 
 clients = []
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.bind((host,port))
+s.setblocking(0)
+
+quitting = False
+print("server started")
+
+while not quitting:
+    try:
+        data, addr = s.recvfrom(1024)
+        if "Quit" == str(data):
+            quitting = True
+        if addr not in clients:
+            clients.append(addr)
+
+        print(str(addr) + ": :" + str(data))
+
+        for client in clients:
+            s.sendto(data, client)
+
+    except:
+        pass
 
 
-try:
-    s.bind((host,port))
-except socket.error as e:
-    print(str(e))
-
-s.listen(5)
-print("Waiting for connection...")
-
-
-def client(conn):
-    name = input("Enter Name: ")
-    conn.send(str.encode("> "))
-
-    while True:
-        data = conn.recv(2048)
-        reply = name +": "+ data.decode("utf-8")
-        if not data:
-            break
-        conn.sendall(str.encode(reply))
-    conn.close()
-
-while True:
-    conn, addr = s.accept()
-    print("connected to: "+addr[0]+":"+str(addr[1]))
-    print("connected to: "+addr2[0]+":"+str(addr2[1]))
-
-    start_new_thread(client(conn,), client(conn2,))
+s.close()
