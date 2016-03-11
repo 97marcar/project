@@ -1,5 +1,3 @@
-
-
 import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -67,11 +65,16 @@ class Reeve(QMainWindow):
         self.string = self.input.text()
         self.input.clear()
         self.command = str(self.string)
-        answer = self.content.handle_command(self.command)
+        temp = self.content.handle_command(self.command)
+        answer = temp[0]
+        clear_check = temp[1]
+        if clear_check == "clear":
+            self.output.clear()
+
         self.output.append(self.string)
         self.output_window(answer)
 
-    def output_window(self,):
+    def output_window(self, answer):
         self.output.append(answer)
 
     def run(self):

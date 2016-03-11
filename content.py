@@ -14,7 +14,7 @@ class Content:
     def handle_command(self, command):
         if self.pos == 0 and command == "begin":
             self.pos = 1
-            return "beginning"
+            return (self.get_description(),"clear")
 
 
     def zero(self):
@@ -31,9 +31,9 @@ class Content:
     def one(self):
         position = 1
         name = "Wooden House"
-        description = "You are standing in the front of a wooden house.\
-        It looks like there is forest in all directions, all though it looks like there is a path \
-        to the west."
+        description = ("You are standing in the front of a wooden house.\n"
+        "It looks like there is forest in all directions, all though it looks like "
+        "there is a path to the west.")
         room_1 = Room(position,name,description)
         self.rooms.append(room_1)
 
