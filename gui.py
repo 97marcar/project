@@ -8,20 +8,20 @@ import content
 app = QApplication(sys.argv)
 
 class Reeve(QMainWindow):
-
+    """The main class"""
     def __init__(self, parent=None):
         super(Reeve, self).__init__()
-        self.setWindowTitle("Test")
+        self.setWindowTitle("Test") #Sets the window Title
         self.preset = 0
         self.initUI()
-        self.setGeometry(735,30,450,500)
-        self.room.setText("Main Menu")
-        self.content = content.Content(0)
-        self.output.append(self.content.get_description())
+        self.setGeometry(735,30,450,500) #Sets the size and position of the window
+        self.room.setText("Main Menu") #Text that displays where you are
+        self.content = content.Content(0) #Creates a class from the content file
+        self.output.append(self.content.get_description()) #Outputs the mainmenu text in the beginning of the game
 
 
     def initUI(self):
-
+        """Draws all the windows on the main window"""
         self.frame = QWidget(self)
         self.setCentralWidget(self.frame)
 
@@ -62,10 +62,11 @@ class Reeve(QMainWindow):
             self.inv["inventory"+str(n)].setMaximumHeight(30)
 
     def add_input(self):
+        """Handles the commands and input"""
         self.string = self.input.text()
         self.input.clear()
         self.command = str(self.string)
-        temp = self.content.handle_command(self.command.lower())
+        temp = self.content.handle_command(self.command.lower()) #Gives the content file the command written in the inputbox
         answer = temp[0]
         second = temp[1]
         if second == "clear":
@@ -77,9 +78,11 @@ class Reeve(QMainWindow):
         self.output_window(answer)
 
     def output_window(self, answer):
+        """Outputs the answer from the content file"""
         self.output.append(answer+"\n")
 
     def run(self):
+        """Runs the application"""
         self.show()
         sys.exit(app.exec_())
 
