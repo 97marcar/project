@@ -65,17 +65,19 @@ class Reeve(QMainWindow):
         self.string = self.input.text()
         self.input.clear()
         self.command = str(self.string)
-        temp = self.content.handle_command(self.command)
+        temp = self.content.handle_command(self.command.lower())
         answer = temp[0]
-        clear_check = temp[1]
-        if clear_check == "clear":
+        second = temp[1]
+        if second == "clear":
             self.output.clear()
+        elif second == "note":
+            self.inv["inventory0"].setText("Note")
 
-        self.output.append(self.string)
+        self.output.append(self.string+"\n")
         self.output_window(answer)
 
     def output_window(self, answer):
-        self.output.append(answer)
+        self.output.append(answer+"\n")
 
     def run(self):
         self.show()
