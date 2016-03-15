@@ -9,6 +9,7 @@ class Content:
         self.rooms = []
         self.zero()
         self.one()
+        self.two()
         self.note = Note()
         self.list_of_commands()
 
@@ -28,12 +29,13 @@ class Content:
     def handle_command(self, command):
         """Here the command given from the gui is handled"""
         #Main Menu
-        if self.pos == 0 and command == "begin":
-            self.pos = 1
-            return (self.get_description(),"clear")
+        if self.pos == 0:
+            if command == "begin":
+                self.pos = 1
+                return (self.get_description(),"clear")
 
         #General
-            #Note
+         #~Note
         elif self.pos == self.note.position and command in self.takeNote \
         and self.note.status == "dropped":
             self.note.status = "picked up"
@@ -42,10 +44,18 @@ class Content:
         elif self.note.status == "picked up" and command == "read note":
             return (self.note.description, "")
 
-        elif command in self.compass[0]:
-            return("123","")
-        elif command in self.compass[1]or[2]or[3]or[4]or[5]or[6]:
-            return("1234","")
+        #Room 1 Wooden House
+        elif self.pos == 1:
+            if command in self.compass[2]:
+                self.pos = 2
+                return(self.get_description(),"")
+            elif command in self.compass[0]or[1]or[3]or[4]or[5]or[6]:
+                return("The forest is to dense, you can't go there.","")
+
+        #Room 2 Forest
+        elif self.pos == 2:
+            pass #to be continued
+
 
         else:
             return ("I beg your pardon?", "")
@@ -75,6 +85,17 @@ class Content:
         "It's a note laying on the ground.")
         room_1 = Room(position,name,description)
         self.rooms.append(room_1)
+
+    def two(self):
+        """Creates room 2, Forest"""
+        position = 2
+        name = "Forest"
+        description = ("You are standing in "
+                    "the middle of a forest."
+                    "The path continues to the west."
+                    "There is a very large rotten three here.")
+        room_2 = Room(position,name,description)
+        self.rooms.append(room_2)
 
     def get_description(self):
         """Returns the description of the current room"""
