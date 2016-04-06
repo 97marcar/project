@@ -69,10 +69,18 @@ class Reeve(QMainWindow):
         temp = self.content.handle_command(self.command.lower()) #Gives the content file the command written in the inputbox
         answer = temp[0]
         second = temp[1]
-        if second == "clear":
+        if "clear" in second:
             self.output.clear()
-        elif second == "note":
+
+        if "Wooden House" in second:
+            self.room.setText("Wooden House")
+
+        if "Forest" in second:
+            self.room.setText("Forest")
+
+        if second == "note":
             self.inv["inventory0"].setText("Note")
+
 
         self.output.append(self.string+"\n")
         self.output_window(answer)
