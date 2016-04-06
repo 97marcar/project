@@ -17,8 +17,8 @@ class Content:
     def list_of_commands(self):
         """Creates lists of commands, for structure"""
         self.compass = [["n", "go n", "north", "go north"],
-        ["s", "go s", "south", "go south"],
         ["w", "go w", "west", "go west"],
+        ["s", "go s", "south", "go south"],
         ["e", "go e", "east", "go east"],
         ["nw", "go nw", "northwest", "go northwest"],
         ["ne", "go ne", "northeast", "go northeast"],
@@ -35,7 +35,7 @@ class Content:
         if self.pos == 0:
             if command == "begin":
                 self.pos = 1
-                return (self.get_description(),"clear")
+                return (self.get_description(),"clear Wooden House")
 
         #General
          #~Note
@@ -49,9 +49,9 @@ class Content:
 
         #Room 1 Wooden House
         elif self.pos == 1:
-            if command in self.compass[2]:
+            if command in self.compass[1]:
                 self.pos = 2
-                return(self.get_description(),"")
+                return(self.get_description(),"clear Forest")
 
             elif command in self.compass[0] or command == "enter house":
                 return("The door is locked.","")
@@ -68,12 +68,20 @@ class Content:
             elif command == "break window":
                 return(self.break_window,"")
 
-            elif command in self.compass[1]or[3]or[4]or[5]or[6]:
+            elif command in self.compass[2] or command in self.compass[3] or \
+            command in self.compass[4] or command in self.compass[5] or \
+            command in self.compass[6] or command in self.compass[7] or \
+            command in self.compass[8]:
                 return("The forest is to dense, you can't go there.","")
+
+            else:
+                return ("I beg your pardon?", "")
 
         #Room 2 Forest
         elif self.pos == 2:
-            pass #to be continued
+            if command in self.compass[3]:
+                self.pos = 1
+                return (self.get_description(),"clear Wooden House")
 
 
         else:
