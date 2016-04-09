@@ -18,7 +18,8 @@ class Reeve(QMainWindow):
         self.room.setText("Main Menu") #Text that displays where you are
         self.content = content.Content(0) #Creates a class from the content file
         self.output.append(self.content.get_description()) #Outputs the mainmenu text in the beginning of the game
-
+        self.setStyleSheet('font-size: 18pt; font-family: Times New Roman;')
+        self.setStyleSheet('font-size: 18pt; font-family: American Typewriter;')
 
     def initUI(self):
         """Draws all the windows on the main window"""
@@ -78,12 +79,19 @@ class Reeve(QMainWindow):
         if "Forest" in second:
             self.room.setText("Forest")
 
+        if "Clearing" in second:
+            self.room.setText("Clearing")
+
         if second == "note":
             self.inv["inventory0"].setText("Note")
 
-
         self.output.append(self.string+"\n")
         self.output_window(answer)
+
+        if "first" in second:
+            self.output.append("You are carrying a backpack with a label "
+            "that says: "
+            'Belongs to Reeve".')
 
     def output_window(self, answer):
         """Outputs the answer from the content file"""
