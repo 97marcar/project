@@ -10,6 +10,7 @@ app = QApplication(sys.argv)
 class Reeve(QMainWindow):
     """The main class"""
     def __init__(self, parent=None):
+        """Constructor, creates variables and run methods at the start"""
         super(Reeve, self).__init__()
         self.setWindowTitle("Test") #Sets the window Title
         self.preset = 0
