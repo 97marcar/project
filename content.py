@@ -30,9 +30,11 @@ class Content:
 
         self.lockpick = ["pick lock", "lockpick", "lockpick door"]
         self.info = ["info","examine","information","look around"]
+        self.swim_west = ["swim", "swim west", "swim w"]
 
     def handle_command(self, command):
         """Here the command given from the gui is handled"""
+
         #Main Menu
         if self.pos == 0:
             if command == "begin":
@@ -65,7 +67,7 @@ class Content:
                 return(self.one.house_description,"")
 
             elif command in self.lockpick:
-                return("Your don't have a lockpick.")
+                return("You don't have a lockpick.")
 
             elif command == "break door":
                 return("Don't overestimate your strength.")
@@ -92,10 +94,27 @@ class Content:
                 self.pos = 3
                 return (self.get_description(),"clear Clearing")
 
+            elif command in self.compass[0] or command in self.compass[2] or \
+            command in self.compass[4] or command in self.compass[5] or \
+            command in self.compass[6] or command in self.compass[7] or \
+            command in self.compass[8]:
+                return("The forest is to dense, you can't go there.","")
+
+        #Room 3 Clearing
+        elif self.pos == 3:
+            if command in compass[1]:
+                return("You're not Jesus, you can't walk on water.")
+
+            if command in self.swim_west:
+                return("You never learned how to swim.")
+
+            if command in compass[0]:
+                self.pos = 4
+                return(self.get_description(),"clear Cave")
+
 
         else:
             return ("I beg your pardon?", "")
-
 
 
     def long_sentences(self):
@@ -147,6 +166,15 @@ class Content:
         "a caveopening in front of you.\n"
         "Also there is a path to the south.")
         room_3 = Room(position,name,description)
+        self.rooms.append(room_3)
+
+    def four(self):
+        position = 4
+        name = "Cave"
+        description = ("You entered a cave."
+        "It's really dark here except for what looks to be"
+        "a light from a torch northwest of you.")
+        room_4 = Room(position,name,description)
         self.rooms.append(room_3)
 
     def get_description(self):
