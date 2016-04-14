@@ -41,6 +41,9 @@ class Content:
                 self.pos = 1
                 return (self.get_description(),"clear Wooden House first")
 
+            else:
+                return("Please type in one of the above.","")
+
         #General
          #~Note
         elif self.pos == self.note.position and command in self.takeNote \
@@ -50,6 +53,12 @@ class Content:
 
         elif self.note.status == "picked up" and command == "read note":
             return (self.note.description, "")
+
+        elif command == "drop note" and self.note.status == "picked up":
+            self.note.position = self.pos
+            self.note.status = "dropped"
+            return("You dropped the note.", "dropNote")
+        #~
 
         elif command in self.info:
             return (self.get_description(),"")
@@ -77,8 +86,7 @@ class Content:
 
             elif command in self.compass[2] or command in self.compass[3] or \
             command in self.compass[4] or command in self.compass[5] or \
-            command in self.compass[6] or command in self.compass[7] or \
-            command in self.compass[8]:
+            command in self.compass[6] or command in self.compass[7]:
                 return("The forest is to dense, you can't go there.","")
 
             else:
@@ -96,8 +104,7 @@ class Content:
 
             elif command in self.compass[0] or command in self.compass[2] or \
             command in self.compass[4] or command in self.compass[5] or \
-            command in self.compass[6] or command in self.compass[7] or \
-            command in self.compass[8]:
+            command in self.compass[6] or command in self.compass[7]:
                 return("The forest is to dense, you can't go there.","")
 
         #Room 3 Clearing
@@ -105,12 +112,39 @@ class Content:
             if command in compass[1]:
                 return("You're not Jesus, you can't walk on water.")
 
-            if command in self.swim_west:
+            elif command in self.swim_west:
                 return("You never learned how to swim.")
 
-            if command in compass[0]:
+            elif command in compass[0]:
                 self.pos = 4
                 return(self.get_description(),"clear Cave")
+
+            elif command in compass[2]:
+                self.pos = 5
+                return(self.get_description(),"clear BanditCamp")
+
+            elif command in compass[3]:
+                self.pos = 2
+                return(self.get_description(),"clear Forest")
+
+
+
+
+
+        #Room 4 Cave entrance
+        elif self.pos == 4:
+            if command in compass[2]:
+                self.pos = 3
+                return(self.get_description(),"clear Clearing")
+
+            elif command in compass[4]:
+                self.pos = 6
+                return(self.get_description(),"clear Cave")
+
+            elif command in self.compass[0] or command in self.compass[1] or \
+            command in self.compass[3] or command in self.compass[5] or \
+            command in self.compass[6] or command in self.compass[7]:
+                return("The forest is to dense, you can't go there.","")
 
 
         else:
