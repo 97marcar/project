@@ -86,6 +86,9 @@ class Reeve(QMainWindow):
         if second == "note":
             self.inv["inventory0"].setText("Note")
 
+        if second == "dropNote":
+            self.inv["inventory0"].setText("")
+
         self.output.append(self.string+"\n")
         self.output_window(answer)
 
