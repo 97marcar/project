@@ -89,13 +89,20 @@ class Reeve(QMainWindow):
         if second == "dropNote":
             self.inv["inventory0"].setText("")
 
+
+
         self.output.append(self.string+"\n")
         self.output_window(answer)
+        if "check" in second:
+            if self.content.pos == self.content.note.position:
+                self.output.append("There is a note laying on the ground.")
 
         if "first" in second:
             self.output.append("You are carrying a backpack with a label "
             "that says: "
             'Belongs to Reeve".')
+
+
 
     def output_window(self, answer):
         """Outputs the answer from the content file"""

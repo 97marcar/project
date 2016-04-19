@@ -11,9 +11,12 @@ class Content:
         self.one()
         self.two()
         self.three()
+        self.four()
         self.note = Note()
         self.list_of_commands()
         self.long_sentences()
+        self.readNote = False
+        self.window = ("whole")
 
     def list_of_commands(self):
         """Creates lists of commands, for structure"""
@@ -28,7 +31,10 @@ class Content:
 
         self.takeNote = ["take note", "pick up note"]
 
-        self.lockpick = ["pick lock", "lockpick", "lockpick door"]
+        self.lockpick = ["pick lock", "lockpick", "lockpick door",
+        "lockpick the door"]
+        self.break_door = ["break door", "slam door", "break the door",
+        "slam the door"]
         self.info = ["info","examine","information","look around"]
         self.swim_west = ["swim", "swim west", "swim w"]
 
@@ -39,7 +45,7 @@ class Content:
         if self.pos == 0:
             if command == "begin":
                 self.pos = 1
-                return (self.get_description(),"clear Wooden House first")
+                return (self.get_description(),"clear Wooden House first check")
 
             else:
                 return("Please type in one of the above.","")
@@ -52,6 +58,7 @@ class Content:
             return ("You picked up a note.", "note")
 
         elif self.note.status == "picked up" and command == "read note":
+            self.readNote = True
             return (self.note.description, "")
 
         elif command == "drop note" and self.note.status == "picked up":
@@ -67,7 +74,7 @@ class Content:
         elif self.pos == 1:
             if command in self.compass[1]:
                 self.pos = 2
-                return(self.get_description(),"clear Forest")
+                return(self.get_description(),"clear Forest check")
 
             elif command in self.compass[0] or command == "enter house":
                 return("The door is locked.","")
@@ -76,13 +83,17 @@ class Content:
                 return(self.one.house_description,"")
 
             elif command in self.lockpick:
-                return("You don't have a lockpick.")
+                return("You don't have a lockpick.","")
 
-            elif command == "break door":
-                return("Don't overestimate your strength.")
+            elif command == self.break_door:
+                return("Don't overestimate your strength.","")
 
             elif command == "break window":
-                return(self.break_window,"")
+                if self.window == "whole":
+                    self.window = "broken"
+                    return(self.break_window,"")
+                elif self.window == "broken":
+                    return("The window is already broken.","")
 
             elif command in self.compass[2] or command in self.compass[3] or \
             command in self.compass[4] or command in self.compass[5] or \
@@ -96,48 +107,51 @@ class Content:
         elif self.pos == 2:
             if command in self.compass[3]:
                 self.pos = 1
-                return (self.get_description(),"clear Wooden House")
+                return (self.get_description(),"clear Wooden House check")
 
             elif command in self.compass[1]:
                 self.pos = 3
-                return (self.get_description(),"clear Clearing")
+                return (self.get_description(),"clear Clearing check")
 
             elif command in self.compass[0] or command in self.compass[2] or \
             command in self.compass[4] or command in self.compass[5] or \
             command in self.compass[6] or command in self.compass[7]:
                 return("The forest is to dense, you can't go there.","")
 
+            else:
+                return ("I beg your pardon?", "")
+
         #Room 3 Clearing
         elif self.pos == 3:
-            if command in compass[1]:
-                return("You're not Jesus, you can't walk on water.")
+            if command in self.compass[1]:
+                return("You're not Jesus, you can't walk on water.","")
 
             elif command in self.swim_west:
-                return("You never learned how to swim.")
+                return("You never learned how to swim.","")
 
-            elif command in compass[0]:
+            elif command in self.compass[0]:
                 self.pos = 4
-                return(self.get_description(),"clear Cave")
+                return(self.get_description(),"clear Cave check")
 
-            elif command in compass[2]:
+            elif command in self.compass[2]:
                 self.pos = 5
-                return(self.get_description(),"clear BanditCamp")
+                return(self.get_description(),"clear BanditCamp check")
 
-            elif command in compass[3]:
+            elif command in self.compass[3]:
                 self.pos = 2
-                return(self.get_description(),"clear Forest")
+                return(self.get_description(),"clear Forest check")
 
-
-
+            else:
+                return ("I beg your pardon?", "")
 
 
         #Room 4 Cave entrance
         elif self.pos == 4:
-            if command in compass[2]:
+            if command in self.compass[2]:
                 self.pos = 3
                 return(self.get_description(),"clear Clearing")
 
-            elif command in compass[4]:
+            elif command in self.compass[4]:
                 self.pos = 6
                 return(self.get_description(),"clear Cave")
 
@@ -146,14 +160,26 @@ class Content:
             command in self.compass[6] or command in self.compass[7]:
                 return("The forest is to dense, you can't go there.","")
 
+            else:
+                return ("I beg your pardon?", "")
+
+        #Room 5 Bandit Camp
+        elif self.pos == 5:
+            if command in self.bandit_conv_start:
+                return(self.bandit_conv,"")
 
         else:
             return ("I beg your pardon?", "")
 
 
+
+
+
     def long_sentences(self):
         self.break_window = ("You break the window and try to crawl inside "
         "but cut yourself on one of the peices and swear to yourself not to try that again.")
+
+
 
     def zero(self):
         """Creates room 0, The Main Menu"""
@@ -163,7 +189,7 @@ class Content:
         'Type:\n'
         '"begin" to start the game \n'
         '"options" for options \n'
-        '"credits" for credits \n')
+        '"credits" for credits ')
         room_0 = Room(position,name,description)
         self.rooms.append(room_0)
 
@@ -175,8 +201,7 @@ class Content:
         " a window next to it")
         description = ("You are standing in the front of a wooden house.\n"
         "It looks like there is forest in all directions, all though it looks like "
-        "there is a path to the west.\n"
-        "It's a note laying on the ground.")
+        "there is a path to the west.")
         room_1 = Room(position,name,description)
         self.rooms.append(room_1)
 
@@ -209,8 +234,36 @@ class Content:
         "It's really dark here except for what looks to be"
         "a light from a torch northwest of you.")
         room_4 = Room(position,name,description)
-        self.rooms.append(room_3)
+        self.rooms.append(room_4)
+
+    def five(self):
+        position = 5
+        name = "BanditCamp"
+        description = ("You have entered a camp full of, from the looks of them, \n"
+        "bandits."
+        "They look like they want to talk and leaving before does not like like"
+        "an option.")
+        room_5 = Room(position,name,description)
+        self.rooms.append(room_5)
 
     def get_description(self):
         """Returns the description of the current room"""
         return self.rooms[self.pos].description
+
+    def conversations(self):
+        self.bandit_conv = (
+        "Bandit: Tell me; what is your name and why are you here.\n"
+        "You: I believe... my name is Reeve...\n"
+        'Bandit: ...What do you mean "believe"? You do not know your own name?\n'
+        "You: I don't remember anything... except a burning house and"
+        "a womans scream.\n"
+        'There is a label on my backpack that says "Belongs to Reeve"'
+        " so I guess that is my name.\n"
+        "...\n"
+        "Bandit: Are you looking for someone?")
+        if readNote == True:
+            self.bandit_conv += (
+            "You: More or less... I woke up next to a house and found a note."
+            "Any chance you've seen someone named Ribulnor?\n")
+        elif readNote == False:
+            self.bandit_conv += ("You: No, why?")
