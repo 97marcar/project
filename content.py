@@ -12,10 +12,12 @@ class Content:
         self.two()
         self.three()
         self.four()
+        self.five()
         self.note = Note()
         self.list_of_commands()
         self.long_sentences()
         self.readNote = False
+        self.bandit_conv_over = False
         self.window = ("whole")
 
     def list_of_commands(self):
@@ -37,6 +39,9 @@ class Content:
         "slam the door"]
         self.info = ["info","examine","information","look around"]
         self.swim_west = ["swim", "swim west", "swim w"]
+
+        self.bandit_conv_start = ["talk", "talk to the bandits", "speak"
+        "speak to the bandits", "talk bandits", "speak bandits"]
 
     def handle_command(self, command):
         """Here the command given from the gui is handled"""
@@ -68,7 +73,7 @@ class Content:
         #~
 
         elif command in self.info:
-            return (self.get_description(),"")
+            return (self.get_description(),"check")
 
         #Room 1 Wooden House
         elif self.pos == 1:
@@ -79,7 +84,7 @@ class Content:
             elif command in self.compass[0] or command == "enter house":
                 return("The door is locked.","")
 
-            elif command == "describe house":
+            elif command == "describe house" or command == "examine house":
                 return(self.one.house_description,"")
 
             elif command in self.lockpick:
@@ -149,11 +154,11 @@ class Content:
         elif self.pos == 4:
             if command in self.compass[2]:
                 self.pos = 3
-                return(self.get_description(),"clear Clearing")
+                return(self.get_description(),"clear Clearing check")
 
             elif command in self.compass[4]:
                 self.pos = 6
-                return(self.get_description(),"clear Cave")
+                return(self.get_description(),"clear Cave check")
 
             elif command in self.compass[0] or command in self.compass[1] or \
             command in self.compass[3] or command in self.compass[5] or \
@@ -165,21 +170,43 @@ class Content:
 
         #Room 5 Bandit Camp
         elif self.pos == 5:
-            if command in self.bandit_conv_start:
-                return(self.bandit_conv,"")
+            if self.bandit_conv_over == False:
+                if command in self.bandit_conv_start:
+                    self.pos = 5.1
+                    return(self.bandit_conversation(),"cursorTop")
+                else:
+                    return("Talk to the bandits before doing anything else.","")
+            if self.bandit_conv_over == True:
+                if command in self.compass[0]:
+                    self.pos = 4
+                    return(self.get_description(),"clear Clearing check")
+                else:
+                    return("Leaving the place by taking the northern path seems"
+                    "like your only option.","")
+
+        elif self.pos == 5.1:
+            if command == "yes":
+                self.pos = 5
+                return(self.bandit_accept,"")
+            elif command == "no":
+                self.pos = 5
+                return(self.bandit_decline,"")
+            else:
+                return("Bandit: Answer me yes or no.","")
 
         else:
             return ("I beg your pardon?", "")
 
-
-
-
-
     def long_sentences(self):
         self.break_window = ("You break the window and try to crawl inside "
-        "but cut yourself on one of the peices and swear to yourself not to try that again.")
+        "but cut yourself on one of the peices and swear to yourself not to "
+        "try that again.")
 
+        self.bandit_accept = ("Bandit: Excellent! Bring back the stone to me "
+        "and you can pass. And take the dwarf with you.")
 
+        self.bandit_decline = ("Bandit: Then get the fuck out of here before I "
+        "cut you open")
 
     def zero(self):
         """Creates room 0, The Main Menu"""
@@ -239,9 +266,9 @@ class Content:
     def five(self):
         position = 5
         name = "BanditCamp"
-        description = ("You have entered a camp full of, from the looks of them, \n"
-        "bandits."
-        "They look like they want to talk and leaving before does not like like"
+        description = ("You have entered a camp full of, from the looks of
+        "them, \nbandits. "
+        "They look like they want to talk and leaving before does not like like "
         "an option.")
         room_5 = Room(position,name,description)
         self.rooms.append(room_5)
@@ -250,7 +277,7 @@ class Content:
         """Returns the description of the current room"""
         return self.rooms[self.pos].description
 
-    def conversations(self):
+    def bandit_conversation(self):
         self.bandit_conv = (
         "Bandit: Tell me; what is your name and why are you here.\n"
         "You: I believe... my name is Reeve...\n"
@@ -260,10 +287,26 @@ class Content:
         'There is a label on my backpack that says "Belongs to Reeve"'
         " so I guess that is my name.\n"
         "...\n"
-        "Bandit: Are you looking for someone?")
-        if readNote == True:
+        "Bandit: Are you looking for someone?\n")
+        if self.readNote == True:
             self.bandit_conv += (
             "You: More or less... I woke up next to a house and found a note."
-            "Any chance you've seen someone named Ribulnor?\n")
-        elif readNote == False:
-            self.bandit_conv += ("You: No, why?")
+            "Any chance you've seen someone named Ribulnor?\n"
+            "Bandit: I do... We have him imprisoned in one of the tents.")
+        else:
+            self.bandit_conv += ("You: No, why?"
+            "Bandit: We got a prisoner in one of our tents. ")
+
+        self.bandit_conv +=(
+        "You: Why is that?\n"
+        "Bandit: Because he failed the quest we gave him.\n"
+        "You: What quest?\n"
+        "Bandit: The same quest we are going to give you;"
+        "We want a red ruby guarded by a ownerless stone guardian "
+        "in a cave nearby. A stone guardian is a type of living door guarding "
+        "a treasure for its owner, but if it is ownerless you can optain the "
+        "treasure by giving the right answer to his riddle. You only get 3 "
+        "chances thought and everyone of us including Ribulnor has failed.\n"
+        "Bandit: Will you accept this quest?\n")
+        self.bandit_conv_over = True
+        return (self.bandit_conv)
