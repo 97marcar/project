@@ -13,6 +13,7 @@ class Content:
         self.three()
         self.four()
         self.five()
+        self.six()
         self.note = Note()
         self.list_of_commands()
         self.long_sentences()
@@ -165,8 +166,38 @@ class Content:
             command in self.compass[6] or command in self.compass[7]:
                 return("The forest is to dense, you can't go there.","")
 
+
+
+        #Room 6 Stone Guardian
+        elif self.pos = 6:
+            if command in self.stone_conv_start and self.stone_conv_over = False:
+                self.pos = 6.1
+                return(self.stone_opener,"")
+            elif command in compass[7]:
+                self.pos = 4
+                return(self.get_description(),"clear Cave check")
+        elif self.pos = 6.1:
+            if command == "yes":
+                self.pos = 6.2
+                return(self.stone_conversation(),"cursorTop")
+            elif command == "no":
+                self.pos = 6
+                return("You may leave or speak to the guardian again. ","clear")
             else:
-                return ("I beg your pardon?", "")
+                return("I require a yes or no answer.")
+                
+        elif self.pos = 6.3:
+            chances = 0
+            if command in answer:
+                return("Correct.")
+            elif command != answer:
+                chances += 1
+
+            if chances == 3:
+                self.pos = 6
+                return("All wrong. Leave.")
+
+
 
         #Room 5 Bandit Camp
         elif self.pos == 5:
@@ -197,6 +228,8 @@ class Content:
         else:
             return ("I beg your pardon?", "")
 
+
+
     def long_sentences(self):
         self.break_window = ("You break the window and try to crawl inside "
         "but cut yourself on one of the peices and swear to yourself not to "
@@ -207,6 +240,9 @@ class Content:
 
         self.bandit_decline = ("Bandit: Then get the fuck out of here before I "
         "cut you open")
+
+        self.stone_opener =("Greetings, I am a ownerless stone guardian. "
+        "Do you wish to obtain the treasure I'm watching over?")
 
     def zero(self):
         """Creates room 0, The Main Menu"""
@@ -266,12 +302,26 @@ class Content:
     def five(self):
         position = 5
         name = "BanditCamp"
-        description = ("You have entered a camp full of, from the looks of
+        description = ("You have entered a camp full of, from the looks of "
         "them, \nbandits. "
         "They look like they want to talk and leaving before does not like like "
         "an option.")
         room_5 = Room(position,name,description)
         self.rooms.append(room_5)
+
+    def six(self):
+        position = 6
+        name = "StoneGuardian"
+        description = ("You get to a oddly looking door lit by a lonely torch."
+        "When you think about it, you've read about such odd looking doors, "
+        "it's not a door, it's a stone guardian."
+        "A stone guardian is guarding something valueble and there are "
+        "only 2 ways to get it: "
+        "1. You are it's owner. "
+        "2. It does not have an owner and you've to answer a riddle correcty. "
+        "You can talk to it and hope it's the second alternative. ")
+        room_6 = Room(position,name,description)
+        self.rooms.append(room_6)
 
     def get_description(self):
         """Returns the description of the current room"""
@@ -279,34 +329,44 @@ class Content:
 
     def bandit_conversation(self):
         self.bandit_conv = (
-        "Bandit: Tell me; what is your name and why are you here.\n"
-        "You: I believe... my name is Reeve...\n"
-        'Bandit: ...What do you mean "believe"? You do not know your own name?\n'
+        "Bandit: Tell me; what is your name and why are you here.\n\n"
+        "You: I believe... my name is Reeve...\n\n"
+        'Bandit: ...What do you mean "believe"? You do not know your own name?\n\n'
         "You: I don't remember anything... except a burning house and"
         "a womans scream.\n"
         'There is a label on my backpack that says "Belongs to Reeve"'
-        " so I guess that is my name.\n"
-        "...\n"
-        "Bandit: Are you looking for someone?\n")
+        " so I guess that is my name.\n\n"
+        "...\n\n"
+        "Bandit: Are you looking for someone?\n\n")
         if self.readNote == True:
             self.bandit_conv += (
             "You: More or less... I woke up next to a house and found a note."
-            "Any chance you've seen someone named Ribulnor?\n"
-            "Bandit: I do... We have him imprisoned in one of the tents.")
+            "Any chance you've seen someone named Ribulnor?\n\n"
+            "Bandit: I do... We have him imprisoned in one of the tents.\n\n")
         else:
-            self.bandit_conv += ("You: No, why?"
-            "Bandit: We got a prisoner in one of our tents. ")
+            self.bandit_conv += ("You: No, why? \n\n"
+            "Bandit: We got a prisoner in one of our tents. \n\n")
 
         self.bandit_conv +=(
-        "You: Why is that?\n"
-        "Bandit: Because he failed the quest we gave him.\n"
-        "You: What quest?\n"
-        "Bandit: The same quest we are going to give you;"
+        "You: Why is that?\n\n"
+        "Bandit: Because he failed the quest we gave him.\n\n"
+        "You: What quest?\n\n"
+        "Bandit: The same quest we are going to give you;\n"
         "We want a red ruby guarded by a ownerless stone guardian "
         "in a cave nearby. A stone guardian is a type of living door guarding "
         "a treasure for its owner, but if it is ownerless you can optain the "
         "treasure by giving the right answer to his riddle. You only get 3 "
-        "chances thought and everyone of us including Ribulnor has failed.\n"
+        "chances thought and everyone of us including Ribulnor has failed.\n\n"
         "Bandit: Will you accept this quest?\n")
         self.bandit_conv_over = True
         return (self.bandit_conv)
+
+    def stone_conversation(self):
+        self.stone_conv = (
+        "500 at the beginning, 500 at the end, \n"
+        "5 in the middle is seen, \n "
+        "The first of all letters, the first of all figures \n"
+        "Take up their stations between, \n"
+        "String them all together, and you will see \n"
+        "The name of an ancient king.\n\n"
+        "You get three chances to answer right.")
