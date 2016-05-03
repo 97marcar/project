@@ -1,4 +1,5 @@
 from classes import *
+import database
 
 class Content:
     def __init__(self, position):
@@ -20,6 +21,7 @@ class Content:
         self.readNote = False
         self.bandit_conv_over = False
         self.window = ("whole")
+        database.create_table()
 
     def list_of_commands(self):
         """Creates lists of commands, for structure"""
@@ -169,14 +171,14 @@ class Content:
 
 
         #Room 6 Stone Guardian
-        elif self.pos = 6:
-            if command in self.stone_conv_start and self.stone_conv_over = False:
+        elif self.pos == 6:
+            if command in self.stone_conv_start and self.stone_conv_over == False:
                 self.pos = 6.1
                 return(self.stone_opener,"")
             elif command in compass[7]:
                 self.pos = 4
                 return(self.get_description(),"clear Cave check")
-        elif self.pos = 6.1:
+        elif self.pos == 6.1:
             if command == "yes":
                 self.pos = 6.2
                 return(self.stone_conversation(),"cursorTop")
@@ -185,8 +187,8 @@ class Content:
                 return("You may leave or speak to the guardian again. ","clear")
             else:
                 return("I require a yes or no answer.")
-                
-        elif self.pos = 6.3:
+
+        elif self.pos == 6.3:
             chances = 0
             if command in answer:
                 return("Correct.")
