@@ -23,6 +23,7 @@ class Content:
         self.window = ("whole")
         self.save = False
         self.load = False
+        self.overwrite = False
         database.create_table()
 
     def list_of_commands(self):
@@ -82,26 +83,45 @@ class Content:
 
         elif command == "save":
             self.save = True
-            return("Enter you name please","")
+            return('Enter your name to create a new save or "overwrite"',"")
 
         elif self.save == True:
             self.save = False
-            save_name = command
-            database.save_data((save_name, self.pos, self.readNote, self.note.status,self.note.position, self.bandit_conv_over))
-            return("Your name is "+save_name+" and you have saved succesfully.","")
+            if command == "overwrite":
+                self.overwrite = True
+                saves = self.get_saves()
+                saves += "Enter the ID of the save you wish to overwrite."
+                return(saves,"")
+            else:
+                save_name = command
+                database.save_data((save_name, self.pos, self.readNote, \
+                self.note.status,self.note.position, self.bandit_conv_over))
+                return("Your name is "+save_name+" and you have saved succesfully.","")
+
+        elif self.overwrite == True:
+            saveID = int(command)
+            database.update_data((self.pos, self.readNote, \
+            self.note.status,self.note.position, self.bandit_conv_over,saveID))
+            return("You have overwritten save number: "+str(saveID)+" succesfully.","")
 
         elif command == "load":
             self.load = True
-            return("Enter SaveID","")
+            saves = self.get_saves()
+            saves += "Enter the ID of the save you wish to load."
+            return(saves,"")
 
         elif self.load == True:
+            self.load = False
             id = command
-            xdd = database.select_data(id)
-            print(xdd)
-            xd = [x[0] for x in xdd]
-            print(xd)
-            print(xd[0])
-            return("LOL","")
+            selected_data = database.select_data(id)
+            self.pos = [x[1] for x in selected_data][0]
+            self.readNote = [x[2] for x in selected_data][0]
+            self.note.status = [x[3] for x in selected_data][0]
+            self.note.position = [x[4] for x in selected_data][0]
+            self.bandit_conv_over = [x[5] for x in selected_data][0]
+            print(self.pos, self.readNote, self.note.status, self.bandit_conv_over)
+
+            return(self.get_description(),"")
 
         #Room 1 Wooden House
         elif self.pos == 1:
@@ -236,7 +256,7 @@ class Content:
                     return("Talk to the bandits before doing anything else.","")
             if self.bandit_conv_over == True:
                 if command in self.compass[0]:
-                    self.pos = 4
+                    self.pos = 3
                     return(self.get_description(),"clear Clearing check")
                 else:
                     return("Leaving the place by taking the northern path seems"
@@ -320,7 +340,7 @@ class Content:
     def four(self):
         position = 4
         name = "Cave"
-        description = ("You entered a cave."
+        description = ("You entered a cave. "
         "It's really dark here except for what looks to be"
         "a light from a torch northwest of you.")
         room_4 = Room(position,name,description)
@@ -397,3 +417,12 @@ class Content:
         "String them all together, and you will see \n"
         "The name of an ancient king.\n\n"
         "You get three chances to answer right.")
+
+    def get_saves(self):
+        name_id = database.select_name_and_id()
+        name_list = [x[0] for x in name_id]
+        id_list = [x[1] for x in name_id]
+        saves = ""
+        for n in range(len(name_list)):
+            saves += ("\nName: "+name_list[n]+"\nID:"+str(id_list[n])+"\n")
+        return(saves)
