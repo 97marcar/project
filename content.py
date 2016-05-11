@@ -21,6 +21,8 @@ class Content:
         self.readNote = False
         self.bandit_conv_over = False
         self.window = ("whole")
+        self.save = False
+        self.load = False
         database.create_table()
 
     def list_of_commands(self):
@@ -77,6 +79,29 @@ class Content:
 
         elif command in self.info:
             return (self.get_description(),"check")
+
+        elif command == "save":
+            self.save = True
+            return("Enter you name please","")
+
+        elif self.save == True:
+            self.save = False
+            save_name = command
+            database.save_data((save_name, self.pos, self.readNote, self.note.status,self.note.position, self.bandit_conv_over))
+            return("Your name is "+save_name+" and you have saved succesfully.","")
+
+        elif command == "load":
+            self.load = True
+            return("Enter SaveID","")
+
+        elif self.load == True:
+            id = command
+            xdd = database.select_data(id)
+            print(xdd)
+            xd = [x[0] for x in xdd]
+            print(xd)
+            print(xd[0])
+            return("LOL","")
 
         #Room 1 Wooden House
         elif self.pos == 1:
