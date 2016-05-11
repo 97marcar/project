@@ -39,6 +39,13 @@ def select_data(id):
 def select_name_and_id():
     with sqlite3.connect("save.db") as db:
         cursor = db.cursor()
-        cursor.execute("SELECT")
+        cursor.execute("SELECT Name, SaveID FROM Save")
         data = cursor.fetchall()
         return data
+
+def update_data(data):
+    with sqlite3.connect("save.db") as db:
+        cursor = db.cursor()
+        sql = "UPDATE Save SET Position=?, ReadNote=?, NoteStatus=?, NotePos=?, BanditConvOver=? WHERE SaveID=?"
+        cursor.execute(sql,data)
+        db.commit()
