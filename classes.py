@@ -34,5 +34,53 @@ class Note(Item):
         else:
             if self.position == 1:
                 return ("It's in front of the wooden house.")
+            elif self.position == 2:
+                return("It's in the forest next to the wooden house.")
+
+            elif self.position == 3:
+                return("It's in the clearing.")
+
+            elif self.position == 4:
+                return("It's in the entrance of the cave.")
+
+            elif self.position == 5:
+                return("It's in the Bandit Camp.")
+
+            elif self.position == 6:
+                return("It's in the room of the stone guardian.")
+
             else:
                 return ("It's nowhere to be found.")
+
+class Ruby(Item):
+    def __init__(self):
+        super().__init__()
+        self.position = 6
+        self.name = "Ruby"
+
+    def get_position(self,info,found):
+        if self.status == "picked up":
+            return("It's in your inventory")
+        elif found == True:
+            if info == True:
+                return("The bandits says it's guarded by a stone guardian.")
+            else:
+                return("I beg your pardon?","")
+        else:
+            if self.position == 1:
+                return ("It's in front of the wooden house.")
+
+            elif self.position == 2:
+                return("It's in the forest next to the wooden house.")
+
+            elif self.position == 3:
+                return("It's in the clearing.")
+
+            elif self.position == 4:
+                return("It's in the entrance of the cave.")
+
+            elif self.position == 5:
+                return("It's in the Bandit Camp.")
+
+            elif self.position == 6:
+                return("It's in the room of the stone guardian.")

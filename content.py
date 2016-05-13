@@ -20,6 +20,8 @@ class Content:
         self.long_sentences()
         self.readNote = False
         self.bandit_conv_over = False
+        self.stone_conv_over = False
+        self.stone_correct = False
         self.window = ("whole")
         self.save = False
         self.load = False
@@ -223,6 +225,16 @@ class Content:
             elif command in compass[7]:
                 self.pos = 4
                 return(self.get_description(),"clear Cave check")
+            elif command in self.take_ruby:
+                
+            else:
+                if self.stone_conv_over == True and self.stone_correct == True:
+                    return("The treasure is up for grabs; a shining red ruby \
+                    lays in the rooms before you.","")
+                elif self.stone_conv_over == True and self.stone_correct == False:
+                    return("The door is closed and your chances of saving the \
+                    dwarf with the ruby looks slim.","")
+
         elif self.pos == 6.1:
             if command == "yes":
                 self.pos = 6.2
@@ -236,11 +248,15 @@ class Content:
         elif self.pos == 6.3:
             chances = 0
             if command in answer:
-                return("Correct.")
+                self.stone_conv_over = True
+                self.stone_correct = True
+                return("Correct.","")
             elif command != answer:
                 chances += 1
 
             if chances == 3:
+                self.stone_conv_over = True
+                self.stone_correct = False
                 self.pos = 6
                 return("All wrong. Leave.")
 
@@ -288,7 +304,7 @@ class Content:
         self.bandit_decline = ("Bandit: Then get the fuck out of here before I "
         "cut you open")
 
-        self.stone_opener =("Greetings, I am a ownerless stone guardian. "
+         =("Greetings, I am a ownerless stone guardian. "
         "Do you wish to obtain the treasure I'm watching over?")
 
     def zero(self):
