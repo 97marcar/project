@@ -1,3 +1,4 @@
+#!/home/macke/anaconda3/bin/python3.5
 import sqlite3
 
 db_name = "save.db"

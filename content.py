@@ -1,3 +1,4 @@
+#!/home/macke/anaconda3/bin/python3.5
 from classes import *
 import database
 
@@ -16,6 +17,7 @@ class Content:
         self.five()
         self.six()
         self.note = Note()
+        self.booleans()
         self.list_of_commands()
         self.long_sentences()
 
@@ -230,7 +232,7 @@ class Content:
                 self.pos = 4
                 return(self.get_description(),"clear Cave check")
             elif command in self.take_ruby:
-
+                pass
             else:
                 if self.stone_conv_over == True and self.stone_correct == True:
                     return("The treasure is up for grabs; a shining red ruby \
@@ -308,7 +310,7 @@ class Content:
         self.bandit_decline = ("Bandit: Then get the fuck out of here before I "
         "cut you open")
 
-         =("Greetings, I am a ownerless stone guardian. "
+        self.stone_opener =("Greetings, I am a ownerless stone guardian. "
         "Do you wish to obtain the treasure I'm watching over?")
 
     def zero(self):

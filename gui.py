@@ -1,3 +1,4 @@
+#!/home/macke/anaconda3/bin/python3.5
 import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
