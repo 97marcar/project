@@ -18,6 +18,11 @@ class Content:
         self.note = Note()
         self.list_of_commands()
         self.long_sentences()
+
+        database.create_table()
+
+    def booleans(self):
+        """runs all the booleans at the start of the program"""
         self.readNote = False
         self.bandit_conv_over = False
         self.stone_conv_over = False
@@ -26,7 +31,6 @@ class Content:
         self.save = False
         self.load = False
         self.overwrite = False
-        database.create_table()
 
     def list_of_commands(self):
         """Creates lists of commands, for structure"""
@@ -226,7 +230,7 @@ class Content:
                 self.pos = 4
                 return(self.get_description(),"clear Cave check")
             elif command in self.take_ruby:
-                
+
             else:
                 if self.stone_conv_over == True and self.stone_correct == True:
                     return("The treasure is up for grabs; a shining red ruby \
