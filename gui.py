@@ -87,11 +87,21 @@ class Reeve(QMainWindow):
         if "BanditCamp" in second:
             self.room.setText("Bandit Camp")
 
+        if "Cave" in second:
+            self.room.setText("Cave")
+
+
         if second == "note":
             self.inv["inventory0"].setText("Note")
 
         if second == "dropNote":
             self.inv["inventory0"].setText("")
+
+        if second == "ruby":
+            self.inv["inventory1"].setText("Ruby")
+
+        if second == "dropRuby":
+            self.inv["inventory1"].setText("")
 
 
 
@@ -106,7 +116,7 @@ class Reeve(QMainWindow):
         if "first" in second:
             self.output.append("You are carrying a backpack with a label "
             "that says: "
-            'Belongs to Reeve".')
+            '"Belongs to Reeve".')
 
         if second == "cursorTop":
             self.output.moveCursor(QTextCursor.Start) #moves to cursor to the top

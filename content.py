@@ -6,9 +6,14 @@ class Content:
     def __init__(self, position):
         """This class controlls the game"""
         self.pos = position
-        self.enter = ""
-        self.command = ""
         self.rooms = []
+        self.create_variables()
+        self.list_of_commands()
+        self.long_sentences()
+        database.create_table()
+
+    def create_rooms(self):
+        """Creates all the rooms at the start of the program"""
         self.zero()
         self.one()
         self.two()
@@ -16,15 +21,15 @@ class Content:
         self.four()
         self.five()
         self.six()
+
+    def create_items(self):
+        """Creates all the items at the start of the program"""
         self.note = Note()
-        self.booleans()
-        self.list_of_commands()
-        self.long_sentences()
+        self.ruby = Ruby()
 
-        database.create_table()
-
-    def booleans(self):
-        """runs all the booleans at the start of the program"""
+    def create_variables(self):
+        """Creates all the variables at the start of the program"""
+        self.chances = 0
         self.readNote = False
         self.bandit_conv_over = False
         self.stone_conv_over = False
@@ -46,6 +51,7 @@ class Content:
         ["se", "go se", "southeast", "go southeast"]]
 
         self.takeNote = ["take note", "pick up note"]
+        self.takeRuby = ["take ruby", "pick up ruby"]
 
         self.lockpick = ["pick lock", "lockpick", "lockpick door",
         "lockpick the door"]
@@ -56,6 +62,11 @@ class Content:
 
         self.bandit_conv_start = ["talk", "talk to the bandits", "speak"
         "speak to the bandits", "talk bandits", "speak bandits"]
+
+        self.stone_conv_start = ["talk", "talk to the stone guardian", "speak"
+        "speak to the stone guardian", "talk stone guardian",
+        "speak stone guardian"]
+
 
     def handle_command(self, command):
         """Here the command given from the gui is handled"""
@@ -84,7 +95,17 @@ class Content:
             self.note.position = self.pos
             self.note.status = "dropped"
             return("You dropped the note.", "dropNote")
-        #~
+            
+        #~Ruby
+        elif self.pos == self.ruby.position and command in self.takeRuby \
+        and self.ruby.status == "dropped":
+            self.ruby.status = "picked up"
+            return ("You picked up a ruby.", "ruby")
+
+        elif command == "drop ruby" and self.ruby.status == "picked up":
+            self.ruby.position = self.pos
+            self.ruby.status = "dropped"
+            return("You dropped the ruby.", "dropRuby")
 
         elif command in self.info:
             return (self.get_description(),"check")
@@ -219,7 +240,7 @@ class Content:
             elif command in self.compass[0] or command in self.compass[1] or \
             command in self.compass[3] or command in self.compass[5] or \
             command in self.compass[6] or command in self.compass[7]:
-                return("The forest is to dense, you can't go there.","")
+                return("It's to dark for you to go there.","")
 
 
 
@@ -228,43 +249,48 @@ class Content:
             if command in self.stone_conv_start and self.stone_conv_over == False:
                 self.pos = 6.1
                 return(self.stone_opener,"")
-            elif command in compass[7]:
+            elif command in self.compass[7]:
                 self.pos = 4
                 return(self.get_description(),"clear Cave check")
             elif command in self.take_ruby:
                 pass
-            else:
-                if self.stone_conv_over == True and self.stone_correct == True:
-                    return("The treasure is up for grabs; a shining red ruby \
-                    lays in the rooms before you.","")
-                elif self.stone_conv_over == True and self.stone_correct == False:
-                    return("The door is closed and your chances of saving the \
-                    dwarf with the ruby looks slim.","")
 
         elif self.pos == 6.1:
             if command == "yes":
                 self.pos = 6.2
-                return(self.stone_conversation(),"cursorTop")
+                return(self.stone_conversation(),"")
             elif command == "no":
                 self.pos = 6
                 return("You may leave or speak to the guardian again. ","clear")
             else:
-                return("I require a yes or no answer.")
+                return("I require a yes or no answer.","")
 
-        elif self.pos == 6.3:
-            chances = 0
-            if command in answer:
+        elif self.pos == 6.2:
+            if command == "david":
+                self.pos = 6
                 self.stone_conv_over = True
                 self.stone_correct = True
-                return("Correct.","")
-            elif command != answer:
-                chances += 1
+                string_for_print = ("Correct. \n"
+                "The treasure is up for grabs; a shining red ruby \
+                lays in the rooms before you.")
+                return(string_for_print,"")
+            elif command != "david":
+                print(self.chances)
+                self.chances += 1
+                if self.chances == 1:
+                    chance_for_print = "Wrong. Two chances remaining."
+                elif self.chances == 2:
+                    chance_for_print = "Wrong. One chance remaining"
+                elif self.chances == 3:
+                    self.stone_conv_over = True
+                    self.stone_correct = False
+                    self.pos = 6
+                    string_for_print = ("All wrong. Leave. \n"
+                    "The door is closed and your chances of saving the \
+                    dwarf with the ruby looks slim.")
+                    return(string_for_print,"")
 
-            if chances == 3:
-                self.stone_conv_over = True
-                self.stone_correct = False
-                self.pos = 6
-                return("All wrong. Leave.")
+                return(chance_for_print,"")
 
 
 
@@ -439,6 +465,7 @@ class Content:
         "String them all together, and you will see \n"
         "The name of an ancient king.\n\n"
         "You get three chances to answer right.")
+        return(self.stone_conv)
 
     def get_saves(self):
         name_id = database.select_name_and_id()
