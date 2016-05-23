@@ -5,11 +5,13 @@ import database
 class Content:
     def __init__(self, position):
         """This class controlls the game"""
-        self.pos = position
         self.rooms = []
         self.create_variables()
+        self.create_items()
+        self.create_rooms()
         self.list_of_commands()
         self.long_sentences()
+        self.pos = position
         database.create_table()
 
     def create_rooms(self):
@@ -35,6 +37,7 @@ class Content:
         self.stone_conv_over = False
         self.stone_correct = False
         self.window = ("whole")
+        self.quest = "not started"
         self.save = False
         self.load = False
         self.overwrite = False
@@ -51,7 +54,13 @@ class Content:
         ["se", "go se", "southeast", "go southeast"]]
 
         self.takeNote = ["take note", "pick up note"]
+        self.noteInfo = ["where is the note", "where is note",
+        "where is the note?", "where is note?"]
+
         self.takeRuby = ["take ruby", "pick up ruby"]
+        self.rubyInfo = ["where is the ruby", "where is ruby",
+        "where is the ruby?", "where is ruby?"]
+
 
         self.lockpick = ["pick lock", "lockpick", "lockpick door",
         "lockpick the door"]
@@ -72,6 +81,7 @@ class Content:
         """Here the command given from the gui is handled"""
 
         #Main Menu
+
         if self.pos == 0:
             if command == "begin":
                 self.pos = 1
@@ -79,6 +89,9 @@ class Content:
 
             else:
                 return("Please type in one of the above.","")
+
+        if self.pos == 666:
+            return("RESTART THE GAME TO TRY AGAIN.","")
 
         #General
          #~Note
@@ -95,10 +108,13 @@ class Content:
             self.note.position = self.pos
             self.note.status = "dropped"
             return("You dropped the note.", "dropNote")
-            
+
+        elif command in self.noteInfo:
+            return(self.note.get_position(),"")
+
         #~Ruby
         elif self.pos == self.ruby.position and command in self.takeRuby \
-        and self.ruby.status == "dropped":
+        and self.ruby.status == "dropped" and self.stone_correct == True:
             self.ruby.status = "picked up"
             return ("You picked up a ruby.", "ruby")
 
@@ -107,12 +123,20 @@ class Content:
             self.ruby.status = "dropped"
             return("You dropped the ruby.", "dropRuby")
 
+        elif command in self.rubyInfo:
+            found = 0
+            if self.bandit_conv_over == True:
+                found = 1
+            if self.stone_conv_over == True:
+                found = 2
+            return(self.ruby.get_position(found),"")
+
         elif command in self.info:
             return (self.get_description(),"check")
 
         elif command == "save":
             self.save = True
-            return('Enter your name to create a new save or "overwrite"',"")
+            return('Enter your name to create a new save or "overwrite" to overwrite',"")
 
         elif self.save == True:
             self.save = False
@@ -217,11 +241,28 @@ class Content:
 
             elif command in self.compass[2]:
                 self.pos = 5
-                return(self.get_description(),"clear BanditCamp check")
+                if self.quest == "declined":
+                    self.pos = 666
+                    return(self.bandit_lose,"clear")
+                elif self.quest == "incomplete":
+                    if self.ruby.status == "picked up" and self.bandit_conv_over == True:
+                        self.ruby.position = 123123
+                        self.quest = "complete"
+                        self.pos = 4
+                        return(self.happybandit,"Clearing")
+                    else:
+                        return(("Bandit: Do you have the Ruby?\nYou: No. \n"
+                        "Bandit: Then go get it if you want the dwarf!"),"")
+                else:
+                    return(self.get_description(),"clear BanditCamp check")
 
             elif command in self.compass[3]:
                 self.pos = 2
                 return(self.get_description(),"clear Forest check")
+
+            elif command in self.compass[4] or command in self.compass[5] or \
+            command in self.compass[6] or command in self.compass[7]:
+                return("The forest is to dense, you can't go there.","")
 
             else:
                 return ("I beg your pardon?", "")
@@ -252,9 +293,15 @@ class Content:
             elif command in self.compass[7]:
                 self.pos = 4
                 return(self.get_description(),"clear Cave check")
-            elif command in self.take_ruby:
-                pass
 
+            elif command in self.compass[0] or command in self.compass[1] or \
+            command in self.compass[2] or command in self.compass[3] or \
+            command in self.compass[4] or command in self.compass[5] or \
+            command in self.compass[6]:
+                return("It's not recommended to talk into a wall.","")
+
+            else:
+                return("I beg your pardon?","")
         elif self.pos == 6.1:
             if command == "yes":
                 self.pos = 6.2
@@ -296,27 +343,32 @@ class Content:
 
         #Room 5 Bandit Camp
         elif self.pos == 5:
-            if self.bandit_conv_over == False:
-                if command in self.bandit_conv_start:
-                    self.pos = 5.1
-                    return(self.bandit_conversation(),"cursorTop")
-                else:
-                    return("Talk to the bandits before doing anything else.","")
-            if self.bandit_conv_over == True:
-                if command in self.compass[0]:
-                    self.pos = 3
-                    return(self.get_description(),"clear Clearing check")
-                else:
-                    return("Leaving the place by taking the northern path seems"
-                    "like your only option.","")
+            if self.quest == "incomplete":
+                if self.bandit_conv_over == True:
+                    if command in self.compass[0]:
+                        self.pos = 3
+                        return(self.get_description(),"clear Clearing check")
+                    else:
+                        return("Leave the place by taking the northern path seems"
+                        "like your only option.","")
+            if self.quest == "not started":
+                if self.bandit_conv_over == False:
+                    if command in self.bandit_conv_start:
+                        self.pos = 5.1
+                        return(self.bandit_conversation(),"cursorTop")
+                    else:
+                        return("Talk to the bandits before doing anything else.","")
+
 
         elif self.pos == 5.1:
             if command == "yes":
                 self.pos = 5
+                self.quest = "incomplete"
                 return(self.bandit_accept,"")
             elif command == "no":
-                self.pos = 5
-                return(self.bandit_decline,"")
+                self.pos = 3
+                self.quest = "declined"
+                return(self.bandit_decline,"Clearing")
             else:
                 return("Bandit: Answer me yes or no.","")
 
@@ -331,13 +383,27 @@ class Content:
         "try that again.")
 
         self.bandit_accept = ("Bandit: Excellent! Bring back the stone to me "
-        "and you can pass. And take the dwarf with you.")
+        "and you can take the dwarf.")
 
         self.bandit_decline = ("Bandit: Then get the fuck out of here before I "
-        "cut you open")
+        "cut you open!")
 
-        self.stone_opener =("Greetings, I am a ownerless stone guardian. "
-        "Do you wish to obtain the treasure I'm watching over?")
+        self.stone_opener =("Stone Guardian: Greetings, I am a ownerless stone "
+        "guardian. Do you wish to obtain the treasure I'm watching over?")
+
+        self.happybandit = ("Bandit: You got the ruby? \n You: Yes. \n"
+        "Bandit: Great! Now take the dwarf and leave.\n\n"
+        "Rubilnor: Thanks for saving me...?\n"
+        "You: Reeve.\n"
+        "Rubilnor: Reeve! Thank you sir. Let's go back to my house and I can \n"
+        "make us dinner\n"
+        "You: Great idea!")
+
+        self.bandit_lose = ("Are you coming back here without the ruby?\n"
+        "You: Yes\n"
+        "Bandit: You are fucking done!\n\n"
+        "The bandits stab you multiple times and you die in a pool of blood.\n\n"
+        "YOU LOST THE GAME PLEASE RESTART TO TRY AGAIN")
 
     def zero(self):
         """Creates room 0, The Main Menu"""
@@ -407,13 +473,13 @@ class Content:
     def six(self):
         position = 6
         name = "StoneGuardian"
-        description = ("You get to a oddly looking door lit by a lonely torch."
+        description = ("You get to a oddly looking door lit by a lonely torch.\n"
         "When you think about it, you've read about such odd looking doors, "
-        "it's not a door, it's a stone guardian."
+        "it's not a door, it's a stone guardian.\n"
         "A stone guardian is guarding something valueble and there are "
-        "only 2 ways to get it: "
-        "1. You are it's owner. "
-        "2. It does not have an owner and you've to answer a riddle correcty. "
+        "only 2 ways to get it: \n"
+        "1. You are it's owner. \n"
+        "2. It does not have an owner and you've to answer a riddle correcty. \n"
         "You can talk to it and hope it's the second alternative. ")
         room_6 = Room(position,name,description)
         self.rooms.append(room_6)
@@ -449,7 +515,7 @@ class Content:
         "Bandit: The same quest we are going to give you;\n"
         "We want a red ruby guarded by a ownerless stone guardian "
         "in a cave nearby. A stone guardian is a type of living door guarding "
-        "a treasure for its owner, but if it is ownerless you can optain the "
+        "a treasure for its owner, but if it's ownerless you can optain the "
         "treasure by giving the right answer to his riddle. You only get 3 "
         "chances thought and everyone of us including Ribulnor has failed.\n\n"
         "Bandit: Will you accept this quest?\n")
