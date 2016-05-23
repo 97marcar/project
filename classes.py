@@ -49,6 +49,8 @@ class Note(Item):
 
             elif self.position == 6:
                 return("It's in the room of the stone guardian.")
+            elif self.position == 123123:
+                return("It's in the bandits possession.")
 
             else:
                 return ("It's nowhere to be found.")
@@ -59,15 +61,12 @@ class Ruby(Item):
         self.position = 6
         self.name = "Ruby"
 
-    def get_position(self,info,found):
+    def get_position(self,found):
         if self.status == "picked up":
             return("It's in your inventory")
-        elif found == True:
-            if info == True:
-                return("The bandits says it's guarded by a stone guardian.")
-            else:
-                return("I beg your pardon?","")
-        else:
+        elif found == 1:
+            return("The bandits says it's guarded by a stone guardian.")
+        elif found == 2:
             if self.position == 1:
                 return ("It's in front of the wooden house.")
 
@@ -85,3 +84,5 @@ class Ruby(Item):
 
             elif self.position == 6:
                 return("It's in the room of the stone guardian.")
+        else:
+            return("I beg your pardon?")
