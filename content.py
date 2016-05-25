@@ -40,6 +40,7 @@ class Content:
         self.quest = "not started"
         self.save = False
         self.load = False
+        self.delete = False
         self.overwrite = False
 
     def list_of_commands(self):
@@ -93,6 +94,10 @@ class Content:
         if self.pos == 666:
             return("RESTART THE GAME TO TRY AGAIN.","")
 
+        if self.pos == 7777:
+            return("RESTART THE GAME IF YOU WANT TO PLAY AGAIN!","")
+
+
         #General
          #~Note
         elif self.pos == self.note.position and command in self.takeNote \
@@ -134,9 +139,11 @@ class Content:
         elif command in self.info:
             return (self.get_description(),"check")
 
+        #~Save and Load
+
         elif command == "save":
             self.save = True
-            return('Enter your name to create a new save or "overwrite" to overwrite',"")
+            return('Enter your name to create a new save, "overwrite" to overwrite or "delete" to delete',"")
 
         elif self.save == True:
             self.save = False
@@ -176,6 +183,18 @@ class Content:
 
             return(self.get_description(),"")
 
+        elif command == "delete":
+            self.delete = True
+            saves = self.get_saves()
+            saves += "Enter the ID of the save you wish to delete"
+            return(saves,"")
+
+        elif self.delete == True:
+            self.delete = False
+            id = command
+            database.delete_data(id)
+            return("You have deleted save number: "+str(command)+" succesfully.","")
+
         #Room 1 Wooden House
         elif self.pos == 1:
             if command in self.compass[1]:
@@ -213,6 +232,9 @@ class Content:
         elif self.pos == 2:
             if command in self.compass[3]:
                 self.pos = 1
+                if self.quest == "complete":
+                    self.pos = 7777
+                    return("YOU WON THE GAME!","clear Wooden House")
                 return (self.get_description(),"clear Wooden House check")
 
             elif command in self.compass[1]:
@@ -248,8 +270,8 @@ class Content:
                     if self.ruby.status == "picked up" and self.bandit_conv_over == True:
                         self.ruby.position = 123123
                         self.quest = "complete"
-                        self.pos = 4
-                        return(self.happybandit,"Clearing")
+                        self.pos = 3
+                        return(self.happybandit,"Clearing dropRuby")
                     else:
                         return(("Bandit: Do you have the Ruby?\nYou: No. \n"
                         "Bandit: Then go get it if you want the dwarf!"),"")
@@ -378,6 +400,7 @@ class Content:
 
 
     def long_sentences(self):
+        "creates lines that would look to cluncy in the middle of the code"
         self.break_window = ("You break the window and try to crawl inside "
         "but cut yourself on one of the peices and swear to yourself not to "
         "try that again.")
@@ -409,10 +432,9 @@ class Content:
         """Creates room 0, The Main Menu"""
         position = 0
         name = "Main Menu"
-        description = ('Welcome to the world of test.\n'
+        description = ('Welcome!\n'
         'Type:\n'
         '"begin" to start the game \n'
-        '"options" for options \n'
         '"credits" for credits ')
         room_0 = Room(position,name,description)
         self.rooms.append(room_0)
@@ -523,6 +545,7 @@ class Content:
         return (self.bandit_conv)
 
     def stone_conversation(self):
+        "creates the conversation with the stone guardian"
         self.stone_conv = (
         "500 at the beginning, 500 at the end, \n"
         "5 in the middle is seen, \n "
@@ -534,6 +557,7 @@ class Content:
         return(self.stone_conv)
 
     def get_saves(self):
+        "a function to fetch the saves and output them to the window"
         name_id = database.select_name_and_id()
         name_list = [x[0] for x in name_id]
         id_list = [x[1] for x in name_id]

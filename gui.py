@@ -13,8 +13,7 @@ class Reeve(QMainWindow):
     def __init__(self, parent=None):
         """Constructor, creates variables and run methods at the start"""
         super(Reeve, self).__init__()
-        self.setWindowTitle("Test") #Sets the window Title
-        self.preset = 0
+        self.setWindowTitle("Reeve") #Sets the window Title
         self.initUI()
         self.setGeometry(735,30,450,500) #Sets the size and position of the window
         self.room.setText("Main Menu") #Text that displays where you are
@@ -69,7 +68,7 @@ class Reeve(QMainWindow):
         self.string = self.input.text()
         self.input.clear()
         self.command = str(self.string)
-        temp = self.content.handle_command(self.command.lower()) #Gives the content file the command written in the inputbox
+        temp = self.content.handle_command(self.command.lower().strip()) #Gives the content file the command written in the inputbox in lowercase letters
         answer = temp[0]
         second = temp[1]
         if "clear" in second:
@@ -100,7 +99,7 @@ class Reeve(QMainWindow):
         if second == "ruby":
             self.inv["inventory1"].setText("Ruby")
 
-        if second == "dropRuby":
+        if "dropRuby" in second:
             self.inv["inventory1"].setText("")
 
 
@@ -112,6 +111,8 @@ class Reeve(QMainWindow):
         if "check" in second:
             if self.content.pos == self.content.note.position:
                 self.output.append("There is a note laying on the ground.")
+            if self.content.pos == self.content.ruby.position and self.content.stone_conv_over == True:
+                self.output.append("There is a ruby laying on the ground.")
 
         if "first" in second:
             self.output.append("You are carrying a backpack with a label "

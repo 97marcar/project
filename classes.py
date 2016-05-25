@@ -1,5 +1,6 @@
 #!/home/macke/anaconda3/bin/python3.5
 class Room:
+    """Creates a room"""
     def __init__(self, position, name, description):
         self.position = position
         self.name = name
@@ -7,10 +8,12 @@ class Room:
 
 
 class Conversation_room(Room):
+    """Was supposed to create a room with conversation but was never used."""
     def __init__(self, position, name, description, who):
         super().__init__(position, name, description)
 
 class Item:
+    """Creates an item"""
     def __init__(self):
         self.status = "dropped"
         self.found = False
@@ -22,6 +25,7 @@ class Item:
         self.status = "dropped"
 
 class Note(Item):
+    """creates an item; note"""
     def __init__(self):
         super().__init__()
         self.position = 1
@@ -30,6 +34,7 @@ class Note(Item):
                             " in a couple of days.\n"
                             "-Ribulnor")
     def get_position(self):
+        """gives you the position of the note"""
         if self.status == "picked up":
             return("It's in your inventory")
         else:
@@ -56,12 +61,14 @@ class Note(Item):
                 return ("It's nowhere to be found.")
 
 class Ruby(Item):
+    """creates an item; ruby"""
     def __init__(self):
         super().__init__()
         self.position = 6
         self.name = "Ruby"
 
     def get_position(self,found):
+        """gives you the position of the ruby"""
         if self.status == "picked up":
             return("It's in your inventory")
         elif found == 1:
